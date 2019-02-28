@@ -4,7 +4,7 @@ import java.util.Collections;
 
 public class Slideshow {
 
-    ArrayList<Photo> orderedSlideshow = new ArrayList<>();
+    ArrayList<String> orderedSlideshow = new ArrayList<>();
     ArrayList<Photo> photosH = new ArrayList<>();
     ArrayList<Photo> photosV = new ArrayList<>();
 
@@ -46,33 +46,36 @@ public class Slideshow {
 
     public void createSlide() {
         Collections.sort(photosV, Collections.reverseOrder());
-        for (Photo ph : photosV) {
-            orderedSlideshow.add(ph);
-        }
         Collections.sort(photosH, Collections.reverseOrder());
-        for (Photo ph : photosH) {
-            orderedSlideshow.add(ph);
+
+        for (int i = 0; i < photosV.size() ; i++) {
+            if(photosV.get(i).orientation.equals("V") && photosV.get(i+1).orientation.equals("V")){
+                orderedSlideshow.add(photosV.get(i).id + " " + photosV.get(i+1).id);
+                i += 1;
+            }
+            else if(photosV.get(i).orientation.equals("V") && !photosV.get(i+1).orientation.equals("V")){
+                continue;
+            }
         }
+
+        for (int i = 0; i < photosH.size() ; i++) {
+            if(photosH.get(i).orientation.equals("H")){
+                orderedSlideshow.add(String.valueOf(photosH.get(i).id));
+            }
+        }
+
     }
 
     public void print(String filename){
         PrintWriter writer = null;
         try {
-            writer = new PrintWriter(filename, "UTF-8");
+            writer = new PrintWriter(filename, "ASCII");
 
             int slideshowSize = orderedSlideshow.size();
             writer.println(slideshowSize);
 
             for (int i = 0; i < slideshowSize ; i++) {
-//                writer.println(orderedSlideshow.get(i).id);
-                if(orderedSlideshow.get(i).orientation.equals("V") && orderedSlideshow.get(i+1).orientation.equals("V")){
-                    writer.println(orderedSlideshow.get(i).id + " " + orderedSlideshow.get(i+1).id);
-                    i += 1;
-                }else if(orderedSlideshow.get(i).orientation.equals("V") && !orderedSlideshow.get(i+1).orientation.equals("V")) {
-                    continue;
-                }else{
-                    writer.println(orderedSlideshow.get(i).id);
-                }
+                writer.println(orderedSlideshow.get(i));
             }
 
             writer.close();

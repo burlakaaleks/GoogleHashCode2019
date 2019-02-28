@@ -18,38 +18,6 @@ public class Photo implements Comparable<Photo> {
 
     @Override
     public int compareTo(Photo o) {
-        return new Double(this.numOfTags).compareTo(new Double(o.numOfTags));
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getOrientation() {
-        return orientation;
-    }
-
-    public void setOrientation(String orientation) {
-        this.orientation = orientation;
-    }
-
-    public int getNumOfTags() {
-        return numOfTags;
-    }
-
-    public void setNumOfTags(int numOfTags) {
-        this.numOfTags = numOfTags;
-    }
-
-    public ArrayList<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(ArrayList<String> tags) {
-        this.tags = tags;
+        return this.tags.get(0).compareTo(tags.get(0));
     }
 }
