@@ -18,7 +18,7 @@ public class Photo implements Comparable<Photo> {
 
     @Override
     public int compareTo(Photo o) {
-        return 
+        return new Double(this.numOfTags).compareTo(new Double(o.numOfTags));
     }
 
     public int getId() {
