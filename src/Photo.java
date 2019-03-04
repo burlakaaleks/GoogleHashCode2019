@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Photo implements Comparable<Photo> {
+public class Photo {
 
     int id;
     String orientation;
@@ -14,10 +14,5 @@ public class Photo implements Comparable<Photo> {
         this.orientation = orientation;
         this.numOfTags = numOfTags;
         this.tags = tags;
-    }
-
-    @Override
-    public int compareTo(Photo o) {
-        return this.tags.get(0).compareTo(tags.get(0));
     }
 }

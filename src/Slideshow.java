@@ -1,12 +1,13 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 public class Slideshow {
 
-    ArrayList<String> orderedSlideshow = new ArrayList<>();
-    ArrayList<Photo> photosH = new ArrayList<>();
-    ArrayList<Photo> photosV = new ArrayList<>();
+    LinkedHashSet<Photo> sortedSlideshow = new LinkedHashSet<>();
+    ArrayList<Photo> photos = new ArrayList<>();
+    HashSet<String> uniqueTags = new HashSet<>();
+    int totalNumberOfPhotos;
+
 
     void parse(String filename){
         int bufferSize = 8 * 1024;
@@ -17,26 +18,25 @@ public class Slideshow {
             bufferedReader = new BufferedReader(new FileReader(filename), bufferSize);
             String firstLine = bufferedReader.readLine();
 
-            int totalNumberOfPhotos = Integer.parseInt(firstLine);
+            totalNumberOfPhotos = Integer.parseInt(firstLine);
 
             for (int i = 0; i < totalNumberOfPhotos; i++) {
 
                 String l = bufferedReader.readLine();
-                String[] arr = l.split(" ");
+                String[] args = l.split(" ");
 
                 Photo photo = new Photo();
 
                 photo.id = i;
-                photo.orientation = arr[0];
-                photo.numOfTags = Integer.parseInt(arr[1]);
+                photo.orientation = args[0];
+                photo.numOfTags = Integer.parseInt(args[1]);
 
-                for (int j = 2; j < arr.length ; j++) {
-                    photo.tags.add(arr[j]);
+                for (int j = 2; j < args.length ; j++) {
+                    photo.tags.add(args[j]);
+                    uniqueTags.add(args[j]);
                 }
-                if(photo.orientation.equals("V")){
-                    photosV.add(photo);
-                }
-                else photosH.add(photo);
+
+                photos.add(photo);
             }
 
         } catch (IOException e) {
@@ -45,25 +45,23 @@ public class Slideshow {
     }
 
     public void createSlide() {
-        Collections.sort(photosV, Collections.reverseOrder());
-        Collections.sort(photosH, Collections.reverseOrder());
+        System.out.println(uniqueTags.size());
 
-        for (int i = 0; i < photosV.size() ; i++) {
-            if(photosV.get(i).orientation.equals("V") && photosV.get(i+1).orientation.equals("V")){
-                orderedSlideshow.add(photosV.get(i).id + " " + photosV.get(i+1).id);
-                i += 1;
-            }
-            else if(photosV.get(i).orientation.equals("V") && !photosV.get(i+1).orientation.equals("V")){
-                continue;
+        Iterator<String> iterator = uniqueTags.iterator();
+
+        while (iterator.hasNext()){
+            String tag = iterator.next();
+
+            for (int i = 0; i < photos.size() ; i++) {
+                for (int j = 0; j < photos.get(i).tags.size() ; j++) {
+                    if(photos.get(i).tags.get(j).equals(tag)){
+                        sortedSlideshow.add(photos.get(i));
+                        System.out.println(photos.get(i).id + " added!");
+                        break;
+                    }
+                }
             }
         }
-
-        for (int i = 0; i < photosH.size() ; i++) {
-            if(photosH.get(i).orientation.equals("H")){
-                orderedSlideshow.add(String.valueOf(photosH.get(i).id));
-            }
-        }
-
     }
 
     public void print(String filename){
@@ -71,11 +69,22 @@ public class Slideshow {
         try {
             writer = new PrintWriter(filename, "ASCII");
 
-            int slideshowSize = orderedSlideshow.size();
+            int slideshowSize = sortedSlideshow.size();
             writer.println(slideshowSize);
 
-            for (int i = 0; i < slideshowSize ; i++) {
-                writer.println(orderedSlideshow.get(i));
+            String verticalSlide = "";
+
+            for (Photo ph:sortedSlideshow) {
+                if(ph.orientation.equals("H")) writer.println(ph.id);
+                else {
+                    verticalSlide += ph.id + " ";
+                    int[] numArr = Arrays.stream(verticalSlide.split(" ")).mapToInt(Integer::parseInt).toArray();
+
+                    if(numArr.length == 2){
+                        writer.println(verticalSlide);
+                        verticalSlide = "";
+                    }
+                }
             }
 
             writer.close();
