@@ -7,7 +7,8 @@ public class Photo {
     int numOfTags;
     ArrayList<String> tags = new ArrayList<>();
 
-    public Photo(){}
+    public Photo() {
+    }
 
     public Photo(int id, String orientation, int numOfTags, ArrayList<String> tags) {
         this.id = id;

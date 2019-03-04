@@ -9,7 +9,7 @@ public class Slideshow {
     int totalNumberOfPhotos;
 
 
-    void parse(String filename){
+    void parse(String filename) {
         int bufferSize = 8 * 1024;
 
         int lineCount = 0;
@@ -31,7 +31,7 @@ public class Slideshow {
                 photo.orientation = args[0];
                 photo.numOfTags = Integer.parseInt(args[1]);
 
-                for (int j = 2; j < args.length ; j++) {
+                for (int j = 2; j < photo.numOfTags; j++) {
                     photo.tags.add(args[j]);
                     uniqueTags.add(args[j]);
                 }
@@ -48,23 +48,20 @@ public class Slideshow {
         System.out.println(uniqueTags.size());
 
         Iterator<String> iterator = uniqueTags.iterator();
-
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             String tag = iterator.next();
 
-            for (int i = 0; i < photos.size() ; i++) {
-                for (int j = 0; j < photos.get(i).tags.size() ; j++) {
-                    if(photos.get(i).tags.get(j).equals(tag)){
-                        sortedSlideshow.add(photos.get(i));
-                        System.out.println(photos.get(i).id + " added!");
-                        break;
-                    }
+            for (int i = 0; i < photos.size(); i++) {
+                if (sortedSlideshow.contains(photos.get(i))) continue;
+
+                if (photos.get(i).tags.contains(tag)) {
+                    sortedSlideshow.add(photos.get(i));
                 }
             }
         }
     }
 
-    public void print(String filename){
+    public void print(String filename) {
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(filename, "ASCII");
@@ -74,13 +71,13 @@ public class Slideshow {
 
             String verticalSlide = "";
 
-            for (Photo ph:sortedSlideshow) {
-                if(ph.orientation.equals("H")) writer.println(ph.id);
+            for (Photo ph : sortedSlideshow) {
+                if (ph.orientation.equals("H")) writer.println(ph.id);
                 else {
                     verticalSlide += ph.id + " ";
                     int[] numArr = Arrays.stream(verticalSlide.split(" ")).mapToInt(Integer::parseInt).toArray();
 
-                    if(numArr.length == 2){
+                    if (numArr.length == 2) {
                         writer.println(verticalSlide);
                         verticalSlide = "";
                     }
